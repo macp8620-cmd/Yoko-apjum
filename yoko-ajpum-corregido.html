@@ -1,0 +1,1804 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yoko Ajpum — El Mono del Cielo</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  /* ===================================================
+     PALETA YOKO AJPUM — inspirada en el logo oficial
+     Cielo azul claro · Amarillo-naranja solar · Verde selva
+     Café cacao · Blanco limpio · Azul marino para contornos
+  =================================================== */
+  :root {
+    --cielo:       #5BC8F5;   /* azul cielo del logo */
+    --cielo-d:     #2FAEE0;   /* cielo más profundo */
+    --amarillo:    #FFCC00;   /* amarillo solar del título */
+    --naranja:     #FF8C00;   /* naranja cálido del contorno título */
+    --verde:       #3CB54A;   /* verde selva del logo */
+    --verde-d:     #2A8A36;
+    --verde-claro: #7FD48A;
+    --cafe:        #8B5E3C;   /* café cacao / tierra */
+    --cafe-d:      #5C3A1E;
+    --azul-marino: #1B3A6B;   /* azul marino para contornos y HUD */
+    --azul-oscuro: #0F2348;   /* fondo más oscuro */
+    --fondo:       #EEF8FF;   /* blanco azulado, como el fondo del logo */
+    --fondo-card:  #FFFFFF;
+    --texto:       #1B3A6B;   /* texto principal en azul marino */
+    --texto-suave: #4A6A9E;
+    --blanco:      #FFFFFF;
+    --rojo:        #E83030;   /* error */
+    --rojo-suave:  rgba(232,48,48,0.12);
+    --verde-ok:    rgba(60,181,74,0.15);
+    --sombra:      rgba(27,58,107,0.15);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--fondo);
+    color: var(--texto);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ===== PANTALLAS ===== */
+  .pantalla { display: none; min-height: 100vh; }
+  .pantalla.activa { display: flex; flex-direction: column; }
+
+  /* ===== PORTADA ===== */
+  #portada {
+    background:
+      linear-gradient(180deg, #B8E8FF 0%, #5BC8F5 40%, #2FAEE0 100%);
+    align-items: center; justify-content: center; text-align: center;
+    position: relative; overflow: hidden;
+    padding: 2.5rem 2rem 3rem;
+  }
+  /* Nubes decorativas */
+  #portada::before {
+    content: '☁️  ☁️     ☁️';
+    position: absolute; top: 1.5rem; left: 0; right: 0;
+    font-size: clamp(1.5rem, 4vw, 2.5rem);
+    opacity: 0.6; pointer-events: none;
+    letter-spacing: 20px;
+    animation: nubes 12s linear infinite;
+  }
+  @keyframes nubes { 0%{transform:translateX(-5%)} 100%{transform:translateX(5%)} }
+  /* Franja de hierba en el fondo */
+  #portada::after {
+    content: '';
+    position: absolute; bottom: 0; left: 0; right: 0;
+    height: 48px;
+    background: var(--verde);
+    clip-path: ellipse(55% 100% at 50% 100%);
+  }
+
+  /* Círculo del logo */
+  .portada-circulo {
+    width: clamp(200px, 55vw, 320px);
+    height: clamp(200px, 55vw, 320px);
+    background: var(--blanco);
+    border-radius: 50%;
+    border: 6px solid var(--amarillo);
+    box-shadow: 0 0 0 4px var(--naranja), 0 12px 40px rgba(0,0,0,0.2);
+    display: flex; align-items: center; justify-content: center;
+    position: relative; z-index: 2;
+    margin: 0 auto 1.2rem;
+    animation: latido 3s ease-in-out infinite;
+    overflow: hidden;
+    background: radial-gradient(ellipse at 30% 40%, #e0f4ff 0%, #c5eaff 100%);
+  }
+  @keyframes latido {
+    0%,100%{transform:scale(1)}
+    50%{transform:scale(1.03)}
+  }
+  .mono-svg {
+    font-size: clamp(5rem, 16vw, 9rem);
+    animation: flotar 2.6s ease-in-out infinite;
+    display: block;
+    filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.2));
+    position: relative; z-index: 1;
+  }
+  @keyframes flotar {
+    0%,100%{transform:translateY(0) rotate(-5deg)}
+    50%{transform:translateY(-14px) rotate(5deg)}
+  }
+
+  .titulo-juego {
+    font-family: 'Fredoka One', cursive;
+    font-size: clamp(3rem, 10vw, 6rem);
+    color: var(--amarillo);
+    -webkit-text-stroke: 3px var(--azul-marino);
+    text-shadow:
+      4px 4px 0 var(--naranja),
+      6px 6px 0 var(--cafe-d);
+    letter-spacing: 3px;
+    line-height: 1;
+    position: relative; z-index: 2;
+  }
+  .subtitulo-yokotan {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 900;
+    font-size: clamp(0.85rem, 2.5vw, 1.1rem);
+    color: var(--azul-marino);
+    margin-top: 0.4rem;
+    position: relative; z-index: 2;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    background: rgba(255,255,255,0.6);
+    display: inline-block;
+    padding: 0.2rem 1rem;
+    border-radius: 50px;
+  }
+  .desc-portada {
+    font-size: clamp(0.9rem, 2.3vw, 1rem);
+    color: var(--azul-marino);
+    max-width: 460px;
+    margin: 1rem auto 1.8rem;
+    line-height: 1.75;
+    position: relative; z-index: 2;
+    background: rgba(255,255,255,0.55);
+    padding: 0.8rem 1.2rem;
+    border-radius: 16px;
+    font-weight: 700;
+  }
+  .desc-portada strong { color: var(--verde-d); }
+  .btn-principal {
+    background: linear-gradient(160deg, var(--amarillo), var(--naranja));
+    color: var(--azul-marino);
+    border: 3px solid var(--azul-marino);
+    cursor: pointer;
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.3rem;
+    padding: 0.9rem 2.8rem;
+    border-radius: 50px;
+    box-shadow: 0 6px 0 var(--cafe-d), 0 8px 20px rgba(0,0,0,0.15);
+    transition: all 0.15s;
+    position: relative; z-index: 2;
+    letter-spacing: 1px;
+  }
+  .btn-principal:hover { transform: translateY(-3px); box-shadow: 0 9px 0 var(--cafe-d), 0 12px 25px rgba(0,0,0,0.2); }
+  .btn-principal:active { transform: translateY(2px); box-shadow: 0 3px 0 var(--cafe-d); }
+  .idioma-badge {
+    position: absolute; top: 1.2rem; right: 1.2rem;
+    background: var(--blanco);
+    border: 2px solid var(--azul-marino);
+    border-radius: 50px;
+    padding: 0.4rem 1rem;
+    font-size: 0.82rem; font-weight: 900;
+    color: var(--azul-marino);
+    cursor: pointer;
+    transition: all 0.2s;
+    z-index: 10;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+  .idioma-badge:hover { background: var(--amarillo); }
+
+  /* ===== HUD ===== */
+  .hud {
+    background: var(--azul-marino);
+    border-bottom: 4px solid var(--amarillo);
+    padding: 0.65rem 1.4rem;
+    display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0; z-index: 100;
+    flex-wrap: wrap; gap: 0.5rem;
+    box-shadow: 0 4px 16px rgba(27,58,107,0.3);
+  }
+  .hud-titulo {
+    font-family: 'Fredoka One', cursive;
+    color: var(--amarillo);
+    font-size: 1.1rem; letter-spacing: 1px;
+  }
+  .hud-pts {
+    background: linear-gradient(135deg, var(--amarillo), var(--naranja));
+    border-radius: 50px;
+    padding: 0.3rem 1rem;
+    font-family: 'Fredoka One', cursive;
+    font-size: 0.95rem;
+    color: var(--azul-marino);
+    box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+  }
+  .hud-progreso {
+    display: flex; align-items: center; gap: 0.5rem;
+    font-size: 0.82rem; font-weight: 800; color: rgba(255,255,255,0.8);
+  }
+  .barra-prog {
+    width: 100px; height: 10px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 10px; overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.2);
+  }
+  .barra-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--verde-claro), var(--amarillo));
+    border-radius: 10px;
+    transition: width 0.7s cubic-bezier(.34,1.56,.64,1);
+  }
+  .btn-idioma-hud {
+    background: rgba(255,255,255,0.12);
+    border: 2px solid rgba(255,255,255,0.4);
+    color: var(--blanco);
+    border-radius: 50px; padding: 0.3rem 0.9rem;
+    font-size: 0.8rem; cursor: pointer;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 900; transition: all 0.2s;
+  }
+  .btn-idioma-hud:hover { background: var(--amarillo); color: var(--azul-marino); border-color: var(--amarillo); }
+
+  /* ===== MAPA ===== */
+  #mapa {
+    background: linear-gradient(180deg, #D6F0FF 0%, #EEF8FF 100%);
+    padding: 0;
+  }
+  .mapa-contenido { padding: 1.5rem; }
+  .mapa-intro {
+    text-align: center;
+    padding: 1.5rem 1rem 1.2rem;
+    margin-bottom: 1.2rem;
+  }
+  .mapa-intro h2 {
+    font-family: 'Fredoka One', cursive;
+    color: var(--azul-marino);
+    font-size: clamp(1.6rem, 4vw, 2.2rem);
+    margin-bottom: 0.3rem;
+    -webkit-text-stroke: 1px var(--azul-marino);
+  }
+  .mapa-intro p { color: var(--texto-suave); font-size: 0.95rem; font-weight: 700; }
+  .grid-lugares {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(265px, 1fr));
+    gap: 1rem;
+    max-width: 1000px; margin: 0 auto;
+  }
+
+  .card-lugar {
+    background: var(--fondo-card);
+    border: 3px solid var(--card-color, var(--cielo));
+    border-radius: 20px;
+    padding: 1.3rem;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(.34,1.56,.64,1);
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 0 var(--card-color, var(--cielo-d)), 0 6px 20px var(--sombra);
+  }
+  .card-lugar:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 10px 0 var(--card-color, var(--cielo-d)), 0 14px 30px var(--sombra);
+  }
+  .card-lugar.completado {
+    background: #F0FFF4;
+    border-color: var(--verde) !important;
+    box-shadow: 0 4px 0 var(--verde-d), 0 6px 16px rgba(60,181,74,0.2);
+    opacity: 0.85;
+  }
+  .card-lugar.bloqueado {
+    opacity: 0.4; cursor: not-allowed;
+    filter: grayscale(0.6);
+    box-shadow: none;
+  }
+  .card-lugar.bloqueado:hover { transform: none; }
+  .lugar-num {
+    font-size: 0.7rem; font-weight: 900;
+    color: var(--card-color, var(--cielo-d));
+    letter-spacing: 3px;
+    text-transform: uppercase; margin-bottom: 0.45rem;
+  }
+  .lugar-nombre {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.1rem;
+    color: var(--azul-marino); margin-bottom: 0.45rem;
+    line-height: 1.25;
+  }
+  .lugar-tipo {
+    font-size: 0.75rem; color: var(--texto-suave);
+    background: var(--fondo);
+    display: inline-block; padding: 0.2rem 0.7rem;
+    border-radius: 50px; margin-bottom: 0.6rem;
+    font-weight: 800; border: 1px solid rgba(27,58,107,0.1);
+  }
+  .lugar-vocab {
+    font-size: 0.78rem;
+    color: var(--verde-d);
+    font-weight: 800;
+  }
+  .badge-status {
+    position: absolute; top: 0.9rem; right: 0.9rem;
+    font-size: 1.3rem;
+  }
+
+  /* ===== VISTA LUGAR ===== */
+  #lugar {
+    background: linear-gradient(180deg, #D6F0FF 0%, #EEF8FF 100%);
+  }
+  .lugar-header {
+    padding: 1.4rem 1.5rem 1.1rem;
+    text-align: center;
+    border-bottom: 3px solid var(--cielo);
+    background: var(--blanco);
+  }
+  .lugar-header h2 {
+    font-family: 'Fredoka One', cursive;
+    font-size: clamp(1.3rem, 4vw, 1.9rem);
+    color: var(--azul-marino);
+  }
+  .lugar-header p {
+    color: var(--texto-suave); font-size: 0.88rem; margin-top: 0.35rem;
+    font-weight: 700; font-style: italic;
+  }
+  .ilustracion-sitio {
+    margin: 0.9rem auto 0.2rem; max-width: 320px;
+    background: linear-gradient(135deg, var(--fondo), #FFFFFF);
+    border: 3px dashed var(--cielo-d);
+    border-radius: 20px;
+    padding: 1.2rem 1rem;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .ilustracion-sitio:hover { transform: translateY(-2px); border-color: var(--amarillo); }
+  .ilustracion-sitio.explorado { border-style: solid; border-color: var(--verde); cursor: default; }
+  .ilustracion-emoji { display: block; font-size: 2.6rem; letter-spacing: 0.3rem; }
+  .ilustracion-hint {
+    color: var(--naranja); font-size: 0.78rem; font-weight: 800;
+    margin-top: 0.5rem; text-transform: uppercase; letter-spacing: 0.3px;
+  }
+  .tabs {
+    display: flex;
+    border-bottom: 3px solid var(--cielo);
+    overflow-x: auto;
+    background: var(--blanco);
+  }
+  .tab {
+    padding: 0.8rem 1.3rem;
+    font-weight: 900; font-size: 0.85rem;
+    cursor: pointer; white-space: nowrap;
+    color: var(--texto-suave);
+    border-bottom: 4px solid transparent;
+    margin-bottom: -3px;
+    transition: all 0.2s; background: none;
+    border-left: none; border-right: none; border-top: none;
+    font-family: 'Nunito', sans-serif;
+  }
+  .tab:hover { color: var(--azul-marino); background: var(--fondo); }
+  .tab.activo { color: var(--azul-marino); border-bottom-color: var(--naranja); background: var(--fondo); }
+  .tab-content { display: none; padding: 1.4rem; max-width: 700px; margin: 0 auto; }
+  .tab-content.activo { display: block; }
+
+  /* Tab Historia */
+  .historia-texto {
+    line-height: 1.85; color: var(--texto);
+    font-size: 0.95rem;
+  }
+  .historia-texto p {
+    margin-bottom: 0.9rem;
+    padding: 0.9rem 1.1rem;
+    background: var(--blanco);
+    border-radius: 14px;
+    border-left: 4px solid var(--cielo);
+    box-shadow: 0 2px 8px var(--sombra);
+    font-weight: 600;
+  }
+
+  /* Tab Reto */
+  .pregunta-box {
+    background: var(--blanco);
+    border: 3px solid var(--amarillo);
+    border-radius: 18px;
+    padding: 1.4rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 4px 0 var(--naranja), 0 6px 20px var(--sombra);
+  }
+  .pregunta-texto {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.15rem;
+    color: var(--azul-marino);
+    margin-bottom: 1.2rem;
+    line-height: 1.45;
+  }
+  .opciones-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.7rem;
+  }
+  @media(max-width:480px){.opciones-grid{grid-template-columns:1fr;}}
+  .completar-box {
+    display: flex; flex-wrap: wrap; gap: 0.7rem;
+    align-items: center;
+  }
+  .completar-input {
+    flex: 1 1 200px;
+    background: var(--fondo);
+    border: 2px solid var(--cielo);
+    border-radius: 12px;
+    padding: 0.85rem 1rem;
+    color: var(--azul-marino);
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.95rem; font-weight: 800;
+    box-shadow: 0 2px 0 var(--cielo-d);
+  }
+  .completar-input:focus { outline: none; border-color: var(--naranja); }
+  .completar-input.correcta { border-color: var(--verde); background: #E8FFF0; color: var(--verde-d); }
+  .completar-input.incorrecta { border-color: var(--rojo); background: #FFF0F0; color: var(--rojo); }
+  .btn-comprobar {
+    background: linear-gradient(160deg, var(--amarillo), var(--naranja));
+    color: var(--azul-marino);
+    border: 2px solid var(--azul-marino);
+    cursor: pointer;
+    font-family: 'Fredoka One', cursive;
+    font-size: 0.9rem;
+    padding: 0.75rem 1.6rem;
+    border-radius: 50px;
+    box-shadow: 0 3px 0 var(--cafe-d);
+    transition: all 0.15s;
+  }
+  .btn-comprobar:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 5px 0 var(--cafe-d); }
+  .btn-comprobar:disabled { opacity: 0.5; cursor: not-allowed; }
+  .opcion-btn {
+    background: var(--fondo);
+    border: 2px solid var(--cielo);
+    border-radius: 12px; padding: 0.85rem 1rem;
+    color: var(--azul-marino); cursor: pointer;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.9rem; font-weight: 800;
+    transition: all 0.15s; text-align: left;
+    box-shadow: 0 2px 0 var(--cielo-d);
+  }
+  .opcion-btn:hover:not(:disabled) {
+    background: #D6F0FF;
+    border-color: var(--cielo-d);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 0 var(--cielo-d);
+  }
+  .opcion-btn.correcta {
+    background: #E8FFF0;
+    border-color: var(--verde);
+    color: var(--verde-d);
+    box-shadow: 0 3px 0 var(--verde-d);
+  }
+  .opcion-btn.incorrecta {
+    background: #FFF0F0;
+    border-color: var(--rojo);
+    color: var(--rojo);
+    box-shadow: 0 3px 0 #A00;
+  }
+  .feedback-box {
+    margin-top: 1rem; padding: 0.9rem 1.1rem;
+    border-radius: 12px; font-size: 0.9rem;
+    line-height: 1.65; display: none; font-weight: 700;
+  }
+  .feedback-box.ok {
+    background: #E8FFF0;
+    border: 2px solid var(--verde);
+    color: var(--verde-d);
+  }
+  .feedback-box.mal {
+    background: #FFF0F0;
+    border: 2px solid var(--rojo);
+    color: var(--rojo);
+  }
+  .btn-siguiente {
+    background: linear-gradient(135deg, var(--verde), var(--verde-claro));
+    border: 2px solid var(--verde-d);
+    color: var(--blanco);
+    padding: 0.75rem 2rem;
+    border-radius: 50px; cursor: pointer;
+    font-family: 'Fredoka One', cursive;
+    font-size: 1rem;
+    margin-top: 1rem; display: none;
+    transition: all 0.15s;
+    box-shadow: 0 4px 0 var(--verde-d);
+  }
+  .btn-siguiente:hover { transform: translateY(-2px); box-shadow: 0 6px 0 var(--verde-d); }
+  .btn-siguiente:active { transform: translateY(1px); box-shadow: 0 2px 0 var(--verde-d); }
+  .puntaje-reto {
+    text-align: center;
+    font-family: 'Fredoka One', cursive;
+    color: var(--azul-marino);
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    letter-spacing: 1px;
+    background: var(--fondo);
+    padding: 0.4rem 1rem;
+    border-radius: 50px;
+    display: inline-block;
+    border: 2px solid var(--cielo);
+    margin-left: auto; margin-right: auto;
+    display: table;
+  }
+
+  /* Tab Curiosidades */
+  .curiosidades-list { list-style: none; }
+  .curiosidades-list li {
+    padding: 1rem 1.1rem; margin-bottom: 0.9rem;
+    background: var(--blanco);
+    border: 2px solid var(--amarillo);
+    border-radius: 16px;
+    font-size: 0.95rem; line-height: 1.7;
+    color: var(--texto); font-weight: 700;
+    box-shadow: 0 3px 0 var(--naranja), 0 4px 12px var(--sombra);
+    transition: all 0.2s;
+  }
+  .curiosidades-list li:hover { transform: translateY(-3px); box-shadow: 0 6px 0 var(--naranja), 0 8px 16px var(--sombra); }
+  .curiosidades-list li::before { content: '🌴 '; font-size: 1.1em; }
+
+  /* Tab Yokot'an */
+  .vocab-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 0.8rem; margin-bottom: 1.5rem;
+  }
+  .vocab-card {
+    background: var(--blanco);
+    border: 2px solid var(--cielo);
+    border-radius: 14px; padding: 0.9rem;
+    text-align: center;
+    cursor: pointer; transition: all 0.2s;
+    box-shadow: 0 3px 0 var(--cielo-d), 0 4px 12px var(--sombra);
+  }
+  .vocab-card:hover {
+    background: #D6F0FF;
+    transform: scale(1.08) rotate(-2deg);
+    border-color: var(--cielo-d);
+    box-shadow: 0 6px 0 var(--cielo-d), 0 8px 20px var(--sombra);
+  }
+  .vocab-yt {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.05rem;
+    color: var(--azul-marino);
+  }
+  .vocab-es { font-size: 0.75rem; color: var(--texto-suave); margin-top: 0.3rem; font-weight: 800; }
+  .frases-titulo {
+    font-family: 'Fredoka One', cursive;
+    color: var(--azul-marino); margin: 1.2rem 0 0.7rem;
+    font-size: 1.1rem;
+  }
+  .frase-item {
+    padding: 0.8rem 1.1rem; margin-bottom: 0.6rem;
+    background: var(--blanco);
+    border-radius: 12px; font-size: 0.9rem;
+    line-height: 1.65;
+    border-left: 4px solid var(--naranja);
+    box-shadow: 0 2px 8px var(--sombra);
+    font-weight: 600;
+  }
+  .frase-yt { color: var(--cielo-d); font-weight: 900; }
+  .frase-es { color: var(--texto-suave); font-style: italic; font-weight: 700; }
+
+  /* Btn volver */
+  .btn-volver {
+    background: rgba(255,255,255,0.2);
+    border: 2px solid rgba(255,255,255,0.5);
+    color: var(--blanco); border-radius: 50px;
+    padding: 0.4rem 1.1rem; cursor: pointer;
+    font-family: 'Nunito', sans-serif; font-size: 0.82rem; font-weight: 900;
+    transition: all 0.2s;
+  }
+  .btn-volver:hover { background: var(--amarillo); color: var(--azul-marino); border-color: var(--amarillo); }
+
+  /* ===== PANTALLA FINAL ===== */
+  #final {
+    background: linear-gradient(180deg, #B8E8FF 0%, #5BC8F5 50%, #3CB54A 100%);
+    align-items: center; justify-content: center;
+    text-align: center; padding: 2rem;
+  }
+  .final-titulo {
+    font-family: 'Fredoka One', cursive;
+    font-size: clamp(2.2rem, 7vw, 4rem);
+    color: var(--amarillo);
+    -webkit-text-stroke: 2px var(--azul-marino);
+    text-shadow: 4px 4px 0 var(--naranja);
+    margin-bottom: 0.5rem;
+  }
+  .estrellas { font-size: 2.8rem; margin: 0.8rem 0; }
+  .final-pts {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.6rem;
+    color: var(--blanco);
+    text-shadow: 2px 2px 0 var(--azul-marino);
+    margin-bottom: 1rem;
+  }
+  .vocab-aprendido-titulo {
+    font-family: 'Fredoka One', cursive;
+    color: var(--azul-marino); font-size: 1.2rem;
+    margin: 1.2rem 0 0.7rem;
+    background: rgba(255,255,255,0.7);
+    display: inline-block; padding: 0.2rem 1rem;
+    border-radius: 50px;
+  }
+  .vocab-aprendido-grid {
+    display: flex; flex-wrap: wrap; gap: 0.5rem;
+    justify-content: center; max-width: 580px; margin: 0 auto 1.5rem;
+  }
+  .vocab-pill {
+    background: var(--blanco);
+    border: 2px solid var(--cielo-d);
+    border-radius: 50px; padding: 0.35rem 0.9rem;
+    font-size: 0.83rem; color: var(--azul-marino);
+    font-weight: 900;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  }
+  .btn-reiniciar {
+    background: linear-gradient(135deg, var(--amarillo), var(--naranja));
+    color: var(--azul-marino); border: 3px solid var(--azul-marino);
+    padding: 1rem 2.5rem; border-radius: 50px;
+    font-family: 'Fredoka One', cursive; font-size: 1.15rem;
+    cursor: pointer;
+    transition: all 0.15s; margin-top: 1rem;
+    box-shadow: 0 6px 0 var(--cafe-d), 0 8px 20px rgba(0,0,0,0.2);
+  }
+  .btn-reiniciar:hover { transform: translateY(-3px); box-shadow: 0 9px 0 var(--cafe-d), 0 12px 24px rgba(0,0,0,0.25); }
+  .btn-reiniciar:active { transform: translateY(2px); box-shadow: 0 3px 0 var(--cafe-d); }
+
+  /* ===== SCROLLBAR ===== */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--fondo); }
+  ::-webkit-scrollbar-thumb { background: var(--cielo); border-radius: 10px; }
+
+  @media(max-width:600px){
+    .grid-lugares { grid-template-columns: 1fr; }
+    .hud { padding: 0.55rem 0.9rem; }
+    .titulo-juego { font-size: clamp(2.6rem, 9vw, 3.5rem); }
+    .portada-circulo { width: 170px; height: 170px; }
+  }
+
+  /* ===== PANTALLA BIENVENIDA ===== */
+  #bienvenida {
+    background: linear-gradient(160deg, #0F2348 0%, #1B3A6B 50%, #2FAEE0 100%);
+    align-items: center; justify-content: center; text-align: center;
+    padding: 2.5rem 2rem; position: relative; overflow: hidden;
+  }
+  #bienvenida::before {
+    content: '⭐  ✨  🌟  ✨  ⭐';
+    position: absolute; top: 2rem; left: 0; right: 0;
+    font-size: 1.4rem; opacity: 0.4; pointer-events: none;
+    letter-spacing: 18px; animation: estrellas 8s ease-in-out infinite alternate;
+  }
+  @keyframes estrellas { 0%{opacity:0.2;transform:scale(0.97)} 100%{opacity:0.55;transform:scale(1.03)} }
+  .bienvenida-emoji {
+    font-size: clamp(4rem, 12vw, 7rem);
+    display: block; margin-bottom: 0.5rem;
+    animation: flotar 3s ease-in-out infinite;
+  }
+  .bienvenida-titulo {
+    font-family: 'Fredoka One', cursive;
+    font-size: clamp(1.8rem, 5.5vw, 3rem);
+    color: var(--amarillo);
+    -webkit-text-stroke: 2px var(--azul-marino);
+    text-shadow: 3px 3px 0 var(--naranja);
+    margin-bottom: 0.6rem;
+  }
+  .bienvenida-badge {
+    display: inline-block;
+    background: var(--amarillo);
+    color: var(--azul-marino);
+    font-size: 0.78rem; font-weight: 900;
+    letter-spacing: 3px; text-transform: uppercase;
+    padding: 0.3rem 1.2rem; border-radius: 50px;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+  }
+  .bienvenida-card {
+    background: rgba(255,255,255,0.1);
+    border: 2px solid rgba(255,255,255,0.2);
+    border-radius: 20px;
+    padding: 1.5rem 1.8rem;
+    max-width: 500px; margin: 0 auto 1.5rem;
+    backdrop-filter: blur(8px);
+  }
+  .bienvenida-card p {
+    color: rgba(255,255,255,0.92);
+    font-size: clamp(0.88rem, 2.2vw, 1rem);
+    line-height: 1.85; font-weight: 700;
+    margin-bottom: 0.8rem;
+  }
+  .bienvenida-card p:last-child { margin-bottom: 0; }
+  .bienvenida-card strong { color: var(--amarillo); }
+  .bienvenida-proposito {
+    display: flex; flex-direction: column; gap: 0.6rem;
+    max-width: 460px; margin: 0 auto 1.8rem;
+  }
+  .prop-item {
+    display: flex; align-items: center; gap: 0.8rem;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 14px; padding: 0.75rem 1rem;
+    text-align: left;
+  }
+  .prop-icono { font-size: 1.6rem; flex-shrink: 0; }
+  .prop-texto { color: rgba(255,255,255,0.9); font-size: 0.88rem; font-weight: 700; line-height: 1.4; }
+  .prop-texto strong { color: var(--amarillo); }
+
+  /* ===== PANTALLA HISTORIA FUGA ===== */
+  #historia-fuga {
+    background: linear-gradient(180deg, #5BC8F5 0%, #B8E8FF 50%, #E8FFD6 100%);
+    align-items: center; justify-content: center; text-align: center;
+    padding: 2.5rem 1.8rem; position: relative; overflow: hidden;
+  }
+  .fuga-titulo {
+    font-family: 'Fredoka One', cursive;
+    font-size: clamp(1.6rem, 5vw, 2.6rem);
+    color: var(--azul-marino);
+    text-shadow: 2px 2px 0 rgba(255,255,255,0.6);
+    margin-bottom: 0.4rem;
+  }
+  .fuga-subtitulo {
+    font-size: 0.82rem; font-weight: 900; letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--verde-d);
+    background: rgba(255,255,255,0.6);
+    display: inline-block; padding: 0.25rem 1rem;
+    border-radius: 50px; margin-bottom: 1.5rem;
+  }
+  .fuga-escena {
+    background: rgba(255,255,255,0.75);
+    border: 3px solid var(--cielo);
+    border-radius: 24px;
+    max-width: 500px; margin: 0 auto 1.4rem;
+    padding: 1.5rem;
+    box-shadow: 0 6px 0 var(--cielo-d), 0 10px 30px rgba(0,0,0,0.1);
+    position: relative;
+  }
+  .fuga-escena-header {
+    display: flex; align-items: center; justify-content: center; gap: 0.6rem;
+    margin-bottom: 1rem;
+    font-family: 'Fredoka One', cursive;
+    color: var(--azul-marino); font-size: 1rem;
+  }
+  .fuga-escena-emoji { font-size: 2rem; }
+  .fuga-panel {
+    display: flex; gap: 1rem; margin-bottom: 1rem;
+    align-items: flex-start;
+  }
+  .fuga-panel.derecha { flex-direction: row-reverse; }
+  .fuga-personaje { font-size: 2.8rem; flex-shrink: 0; }
+  .fuga-burbuja {
+    background: var(--blanco);
+    border: 2px solid var(--cielo);
+    border-radius: 16px 16px 16px 4px;
+    padding: 0.75rem 1rem;
+    font-size: 0.88rem; line-height: 1.65;
+    color: var(--texto); font-weight: 700;
+    text-align: left; flex: 1;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.07);
+  }
+  .fuga-panel.derecha .fuga-burbuja {
+    border-radius: 16px 16px 4px 16px;
+    background: #FFFBEA;
+    border-color: var(--amarillo);
+  }
+  .fuga-accion {
+    text-align: center;
+    font-size: 0.82rem; font-weight: 900;
+    color: var(--verde-d); letter-spacing: 1px;
+    padding: 0.5rem; margin: 0.3rem 0;
+    background: #F0FFF4; border-radius: 8px;
+    border: 1px dashed var(--verde);
+  }
+  .fuga-mision {
+    max-width: 500px; margin: 0 auto 1.5rem;
+    background: var(--azul-marino);
+    border-radius: 18px; padding: 1.1rem 1.4rem;
+    border: 3px solid var(--amarillo);
+    box-shadow: 0 5px 0 var(--cafe-d);
+  }
+  .fuga-mision-titulo {
+    font-family: 'Fredoka One', cursive;
+    color: var(--amarillo); font-size: 1.1rem; margin-bottom: 0.6rem;
+  }
+  .fuga-mision p {
+    color: rgba(255,255,255,0.9); font-size: 0.88rem; line-height: 1.7;
+    font-weight: 700;
+  }
+  .fuga-mision strong { color: var(--amarillo); }
+  .lugares-preview {
+    display: flex; flex-wrap: wrap; gap: 0.4rem;
+    justify-content: center; margin-top: 0.7rem;
+  }
+  .lugar-chip {
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,204,0,0.4);
+    border-radius: 50px; padding: 0.25rem 0.8rem;
+    font-size: 0.75rem; color: rgba(255,255,255,0.85);
+    font-weight: 800;
+  }
+
+</style>
+
+</head>
+<body>
+
+<!-- ====== PORTADA ====== -->
+<div id="portada" class="pantalla activa">
+  <button class="idioma-badge" onclick="toggleIdioma()">🌿 <span id="idioma-label">YT</span></button>
+  <div class="portada-circulo">
+    <span class="mono-svg">🐒</span>
+  </div>
+  <h1 class="titulo-juego" id="txt-titulo">Yoko Ajpum</h1>
+  <p class="subtitulo-yokotan" id="txt-subtitulo">El Mono del Cielo</p>
+  <p class="desc-portada" id="txt-desc">
+    Tu mono mascota escapó y se perdió entre los sitios históricos de Villahermosa. 
+    Recorre 8 lugares, descubre su historia y aprende palabras en <strong>yokot'an</strong> para encontrarlo.
+  </p>
+  <button class="btn-principal" onclick="irAPantalla('bienvenida')" id="txt-btn-inicio">Comenzar aventura</button>
+  <p style="margin-top:1.2rem;font-size:0.78rem;color:var(--azul-marino);position:relative;z-index:2;font-weight:800;opacity:0.7;" id="txt-credito">
+    UJAT · CCYTET CHTI 2026 · Villahermosa, Tabasco
+  </p>
+</div>
+
+<!-- ====== BIENVENIDA ====== -->
+<div id="bienvenida" class="pantalla">
+  <span class="bienvenida-emoji">🐒</span>
+  <h2 class="bienvenida-titulo">¡Bienvenido, Viajero!</h2>
+  <p class="bienvenida-badge">🌴 Yoko Ajpum · El Mono del Cielo</p>
+
+  <div class="bienvenida-card">
+    <p>Estás a punto de vivir una aventura por los sitios históricos y culturales más importantes de <strong>Villahermosa, Tabasco</strong>.</p>
+    <p>Este juego fue creado para que explores el patrimonio de nuestra ciudad mientras aprendes palabras en <strong>yokot'an</strong>, la lengua chontal de Tabasco, una de las lenguas originarias más antiguas del sureste mexicano.</p>
+  </div>
+
+  <div class="bienvenida-proposito">
+    <div class="prop-item">
+      <span class="prop-icono">🏛️</span>
+      <span class="prop-texto">Visita <strong>8 lugares históricos</strong> de Villahermosa y descubre su historia</span>
+    </div>
+    <div class="prop-item">
+      <span class="prop-icono">🌿</span>
+      <span class="prop-texto">Aprende <strong>vocabulario en yokot'an</strong>, la lengua chontal de Tabasco</span>
+    </div>
+    <div class="prop-item">
+      <span class="prop-icono">🎯</span>
+      <span class="prop-texto">Responde preguntas para <strong>encontrar pistas</strong> y localizar a Yoko</span>
+    </div>
+  </div>
+
+  <button class="btn-principal" onclick="irAPantalla('historia-fuga')">
+    ¿Qué pasó con Yoko? 🐒
+  </button>
+</div>
+
+<!-- ====== HISTORIA FUGA DE YOKO ====== -->
+<div id="historia-fuga" class="pantalla">
+  <h2 class="fuga-titulo">☀️ Un día soleado en Villahermosa...</h2>
+  <p class="fuga-subtitulo">El inicio de la aventura</p>
+
+  <div class="fuga-escena">
+    <div class="fuga-escena-header">
+      <span class="fuga-escena-emoji">📍</span>
+      <span>Parque Tomás Garrido · Mañana soleada</span>
+    </div>
+
+    <div class="fuga-panel">
+      <span class="fuga-personaje">📸</span>
+      <div class="fuga-burbuja">
+        Era una mañana perfecta. El Turista llegó a Villahermosa con su cámara lista para fotografiar los monumentos históricos más famosos de la ciudad.
+      </div>
+    </div>
+
+    <div class="fuga-panel derecha">
+      <span class="fuga-personaje">🐒</span>
+      <div class="fuga-burbuja">
+        Yoko, el pequeño mono que lo acompañaba desde la Chontalpa, saltaba emocionado entre los árboles del parque. Era su primera visita a la ciudad.
+      </div>
+    </div>
+
+    <div class="fuga-accion">📸 El Turista levantó la cámara para tomar la foto perfecta...</div>
+
+    <div class="fuga-panel">
+      <span class="fuga-personaje">😱</span>
+      <div class="fuga-burbuja">
+        ¡Un instante de distracción fue suficiente! Cuando el Turista bajó la cámara, Yoko ya no estaba. Sólo quedaba una pequeña huella en la hierba y el eco de su chillido alejándose entre los edificios.
+      </div>
+    </div>
+
+    <div class="fuga-accion">🌀 ¡Yoko se escapó por la ciudad!</div>
+
+    <div class="fuga-panel derecha">
+      <span class="fuga-personaje">🗺️</span>
+      <div class="fuga-burbuja">
+        Alguien vio al monito correr con curiosidad hacia los sitios históricos... deja pequeñas pistas en cada lugar que visita.
+      </div>
+    </div>
+  </div>
+
+  <div class="fuga-mision">
+    <p class="fuga-mision-titulo">🎯 Tu misión</p>
+    <p>Recorre los <strong>8 lugares históricos</strong> de Villahermosa, responde las preguntas de cada sitio para encontrar las pistas y <strong>seguir el rastro de Yoko</strong> hasta encontrarlo.</p>
+    <div class="lugares-preview">
+      <span class="lugar-chip">🦁 Parque Tomás Garrido</span>
+      <span class="lugar-chip">🏛️ CICOM</span>
+      <span class="lugar-chip">🌊 Malecón</span>
+      <span class="lugar-chip">⛪ Catedral</span>
+      <span class="lugar-chip">🌿 Zona Luz</span>
+      <span class="lugar-chip">🏺 Museo Antropología</span>
+      <span class="lugar-chip">🧱 Comalcalco</span>
+      <span class="lugar-chip">🗿 La Venta</span>
+    </div>
+  </div>
+
+  <button class="btn-principal" onclick="irAMapa()">
+    ¡Vamos a buscar a Yoko! 🐒
+  </button>
+</div>
+
+<!-- ====== MAPA ====== -->
+<div id="mapa" class="pantalla">
+  <div class="hud">
+    <span class="hud-titulo">🐒 Yoko Ajpum</span>
+    <div class="hud-progreso">
+      <span id="hud-prog-txt">0/8</span>
+      <div class="barra-prog"><div class="barra-fill" id="barra-fill" style="width:0%"></div></div>
+    </div>
+    <span class="hud-pts" id="hud-pts">0 pts</span>
+    <button class="btn-idioma-hud" onclick="toggleIdioma()">🌿 <span id="hud-idioma-label">YT</span></button>
+  </div>
+  <div class="mapa-contenido">
+    <div class="mapa-intro">
+      <h2 id="mapa-titulo">Mapa de Villahermosa</h2>
+      <p id="mapa-subtitulo">Elige un lugar para buscar a tu mono 🐒</p>
+    </div>
+    <div class="grid-lugares" id="grid-lugares"></div>
+  </div>
+</div>
+
+<!-- ====== LUGAR ====== -->
+<div id="lugar" class="pantalla">
+  <div class="hud">
+    <button class="btn-volver" onclick="irAMapa()">← <span id="txt-volver">Mapa</span></button>
+    <span class="hud-titulo" id="lugar-hud-nombre"></span>
+    <span class="hud-pts" id="lugar-hud-pts">0 pts</span>
+    <button class="btn-idioma-hud" onclick="toggleIdioma()">🌿 <span id="lugar-idioma-label">YT</span></button>
+  </div>
+  <div class="lugar-header">
+    <h2 id="lugar-nombre-titulo"></h2>
+    <div class="ilustracion-sitio" id="ilustracion-sitio" onclick="buscarPista()">
+      <span class="ilustracion-emoji" id="ilustracion-emoji"></span>
+      <p class="ilustracion-hint" id="ilustracion-hint">🔍 Toca la ilustración para buscar la pista de Yoko</p>
+    </div>
+    <p id="lugar-pista" style="display:none"></p>
+  </div>
+  <div class="tabs">
+    <button class="tab activo" data-tab="historia" onclick="cambiarTab(this,'historia')" id="tab-historia">📜 Historia</button>
+    <button class="tab" data-tab="reto" onclick="cambiarTab(this,'reto')" id="tab-reto">🎯 Reto</button>
+    <button class="tab" data-tab="curiosidades" onclick="cambiarTab(this,'curiosidades')" id="tab-curiosidades">✨ Curiosidades</button>
+    <button class="tab" data-tab="yokotan" onclick="cambiarTab(this,'yokotan')" id="tab-yokotan">🌿 Yokot'an</button>
+  </div>
+
+  <!-- Historia -->
+  <div class="tab-content activo" id="tab-content-historia">
+    <div class="historia-texto" id="historia-texto"></div>
+  </div>
+
+  <!-- Reto -->
+  <div class="tab-content" id="tab-content-reto">
+    <p class="puntaje-reto" id="reto-puntaje-display">Pregunta 1 de 4</p>
+    <div id="reto-contenido"></div>
+  </div>
+
+  <!-- Curiosidades -->
+  <div class="tab-content" id="tab-content-curiosidades">
+    <ul class="curiosidades-list" id="curiosidades-lista"></ul>
+  </div>
+
+  <!-- Yokot'an -->
+  <div class="tab-content" id="tab-content-yokotan">
+    <div class="vocab-grid" id="vocab-grid"></div>
+    <p class="frases-titulo" id="frases-titulo">Frases del lugar</p>
+    <div id="frases-lista"></div>
+  </div>
+</div>
+
+<!-- ====== FINAL ====== -->
+<div id="final" class="pantalla">
+  <div style="max-width:600px;width:100%">
+    <p style="font-size:4rem">🐒</p>
+    <h2 class="final-titulo" id="final-titulo">¡Encontraste a Yoko!</h2>
+    <div class="estrellas" id="estrellas-final">⭐⭐⭐</div>
+    <p class="final-pts" id="final-pts"></p>
+    <p style="color:var(--piedra);font-size:0.95rem;line-height:1.7;margin-bottom:1rem" id="final-desc"></p>
+    <p class="vocab-aprendido-titulo" id="vocab-aprendido-titulo">Yokot'an que aprendiste hoy:</p>
+    <div class="vocab-aprendido-grid" id="vocab-aprendido-grid"></div>
+    <button class="btn-reiniciar" onclick="reiniciar()" id="btn-reiniciar">Jugar de nuevo 🔄</button>
+  </div>
+</div>
+
+<script>
+// ===================================================
+// DATOS DE LOS LUGARES
+// ===================================================
+const DATOS_LUGARES = [
+  {
+    id: 0, desbloqueado: true,
+    nombre: { es: "Parque Tomás Garrido Canabal", yt: "Yajal Tomás Garrido" },
+    tipo: { es: "Trivia + V/F", yt: "Tribia + Ja'/Ma'" },
+    ilustracion: "🌳🐒🦎",
+    vocab: ["choko","jom","mut","k'inal"],
+    pista: {
+      es: "Tu mono fue visto cerca de un enorme ahuehuete... ¿Cuál es el árbol más famoso del parque?",
+      yt: "Aj'an choko tu beel... ¿Ba'ax tunich yajal te'?"
+    },
+    historia: {
+      es: `<p>El Parque Tomás Garrido Canabal, conocido popularmente como "La Choca" o "El Parque de los Animales", es uno de los espacios verdes más emblemáticos de Villahermosa. Fue creado durante el gobierno de Tomás Garrido Canabal en la década de 1920, quien transformó radicalmente el estado de Tabasco.</p>
+<p>El parque alberga una colección zoológica que incluye especies endémicas del sureste mexicano: tapires, cocodrilos, monos saraguatos y tucanes. Es también uno de los últimos refugios de vegetación tropical dentro de la zona urbana de Villahermosa.</p>
+<p>El ahuehuete milenario, con más de 400 años de antigüedad, es el símbolo viviente del parque y uno de los árboles más longevos del estado.</p>`,
+      yt: `<p>Yajal Tomás Garrido Canabal, ts'íibil "La Choca", jun p'éel yajal ka'an takin ti' Villahermosa. Laj túub' ti' le gobierno Tomás Garrido Canabal tu jaab' 1920.</p>
+<p>Ti' yajal yaan zoo yéetel animales ti' Tabasco: balam ha', ajaw chan, saraguato yéetel pájaro tukan. Jun p'éel yajal ya'ax ti' peten.</p>
+<p>Le ahuehuete milenario, mas 400 jaab' u yéetel, le símbolo yajal.</p>`
+    },
+    curiosidades: [
+      "El ahuehuete del parque tiene más de 400 años y su tronco requiere varios adultos para rodearlo.",
+      "Tomás Garrido Canabal fue uno de los políticos más controversiales de México en los años 30; su gobierno modernizó Tabasco pero también prohibió el alcohol.",
+      "El parque es uno de los pocos zoológicos de México que no cobra entrada.",
+      "Los monos saraguatos del parque son los mismos que el yokot'an llama 'saraguato'; su grito puede escucharse a 3 km de distancia."
+    ],
+    vocabulario: [
+      { yt: "choko", es: "mono" }, { yt: "jom", es: "agua/río" },
+      { yt: "mut", es: "pájaro" }, { yt: "k'inal", es: "tierra/lugar" }
+    ],
+    frases: [
+      { yt: "In choko k'uchul ti' yajal.", es: "Mi mono llegó al parque." },
+      { yt: "Yaan mut ti' te' k'inal.", es: "Hay pájaros en ese lugar." }
+    ],
+    preguntas: [
+      { tipo:"trivia", texto:{es:"¿En qué década fue creado el Parque Tomás Garrido Canabal?",yt:"¿Ba'ax jaab' laj túub' yajal Tomás Garrido?"},
+        opciones:{es:["1900s","1920s","1950s","1970s"],yt:["1900s","1920s","1950s","1970s"]}, correcta:1,
+        explicacion:{es:"El parque fue fundado en la década de 1920 bajo el gobierno de Tomás Garrido Canabal.",yt:"Le yajal laj túub' tu jaab' 1920s."} },
+      { tipo:"vf", texto:{es:"El ahuehuete del parque tiene más de 400 años de antigüedad.",yt:"Le ahuehuete yaan mas 400 jaab' u yéetel."},
+        opciones:{es:["Verdadero","Falso"],yt:["Ja'","Ma'"]}, correcta:0,
+        explicacion:{es:"Correcto. El ahuehuete es un árbol milenario que simboliza la permanencia del parque.",yt:"Ja'. Le ahuehuete símbolo yajal."} },
+      { tipo:"trivia", texto:{es:"¿Qué especie de mono habita en el parque?",yt:"¿Ba'ax choko yaan ti' yajal?"},
+        opciones:{es:["Mono araña","Mono saraguato","Mono capuchino","Chimpancé"],yt:["Choko [revisar con Flor]","Choko saraguato","Choko capuchino","Chimpancé"]}, correcta:1,
+        explicacion:{es:"El mono saraguato (aullador) es endémico del sureste mexicano y habita en el parque.",yt:"Le choko saraguato ti' Tabasco."} },
+      { tipo:"trivia", texto:{es:"¿Cuál es una característica única del zoológico del parque?",yt:"¿Ba'ax especial ti' le zoológico?"},
+        opciones:{es:["Es el más grande de México","No cobra entrada","Tiene animales africanos","Está en una isla"],yt:["Nojoch mas México","Ma' u táan","Yaan animales África","Ti' isla"]}, correcta:1,
+        explicacion:{es:"El zoológico del parque es gratuito, lo que lo hace accesible para todos los tabasqueños.",yt:"Le zoológico ma' u táan, bin ba'ax winik."} }
+    ]
+  },
+  {
+    id: 1, desbloqueado: false,
+    nombre: { es: "CICOM y Paseo Tabasco", yt: "CICOM yéetel Beel Tabasco" },
+    tipo: { es: "Completar + Trivia", yt: "Chupa + Tribia" },
+    ilustracion: "🏛️🌊📖",
+    vocab: ["jom","t'an","otot","xook'"],
+    pista: {
+      es: "Tu mono se subió a la torre del teatro... ¿Qué río corre junto al CICOM?",
+      yt: "Choko bin beel teatro... ¿Ba'ax jom tu jéel CICOM?"
+    },
+    historia: {
+      es: `<p>El Centro de Investigación de las Culturas Olmeca y Maya (CICOM) es un recinto cultural único en el sureste mexicano. Inaugurado en 1980, alberga el Museo Regional de Antropología "Carlos Pellicer Cámara", el Teatro del Pueblo y diversas salas de exposición.</p>
+<p>Se ubica a orillas del Río Grijalva, uno de los ríos más caudalosos de México. El Paseo Tabasco que lo flanquea es un malecón cultural donde confluyen arte, historia y naturaleza fluvial.</p>
+<p>El museo lleva el nombre del poeta Carlos Pellicer, nacido en Villahermosa en 1897, quien donó gran parte de su colección arqueológica personal al estado.</p>`,
+      yt: `<p>Le CICOM jun p'éel ka' cultural ti' sureste. Laj k'uchul 1980, yaan Museo Carlos Pellicer, Teatro del Pueblo yéetel salas.</p>
+<p>Yaan ti' pool Río Grijalva, jun p'éel nojoch jom ti' México. Le Paseo Tabasco beel cultural ti' jom.</p>
+<p>Le museo u k'aaba' poeta Carlos Pellicer, patal Villahermosa tu jaab' 1897.</p>`
+    },
+    curiosidades: [
+      "Carlos Pellicer fue nominado al Premio Nobel de Literatura en dos ocasiones y es considerado el mayor poeta tabasqueño.",
+      "El Río Grijalva nace en Chiapas, recorre Tabasco y desemboca en el Golfo de México, siendo el segundo río más caudaloso del país.",
+      "El CICOM tiene una colección de más de 40,000 piezas arqueológicas olmecas y mayas.",
+      "El Teatro del Pueblo del CICOM ha sido sede del Festival Internacional de Teatro Universitario."
+    ],
+    vocabulario: [
+      { yt: "jom", es: "río/agua" }, { yt: "t'an", es: "lengua/palabra" },
+      { yt: "otot", es: "casa/edificio" }, { yt: "xook'", es: "aprender/leer" }
+    ],
+    frases: [
+      { yt: "Le CICOM otot xook' ti' jom.", es: "El CICOM es casa del saber junto al río." },
+      { yt: "T'an ka' yaan ti' le museo.", es: "Dos lenguas viven en el museo." }
+    ],
+    preguntas: [
+      { tipo:"completar", texto:{es:"Completa: el CICOM fue inaugurado en el año ______.",yt:"Ts'aan: le CICOM laj k'uchul tu jaab' ______."},
+        respuesta:{es:["1980"],yt:["1980"]},
+        explicacion:{es:"El CICOM fue inaugurado en 1980 como centro de investigación de culturas olmeca y maya.",yt:"Le CICOM laj k'uchul 1980."} },
+      { tipo:"trivia", texto:{es:"¿A orillas de qué río se ubica el CICOM?",yt:"¿Ba'ax jom yaan CICOM?"},
+        opciones:{es:["Río Usumacinta","Río Grijalva","Río Mezcalapa","Río Carrizal"],yt:["Jom Usumacinta","Jom Grijalva","Jom Mezcalapa","Jom Carrizal"]}, correcta:1,
+        explicacion:{es:"El CICOM se ubica a orillas del Río Grijalva, el segundo más caudaloso de México.",yt:"CICOM yaan pool Jom Grijalva."} },
+      { tipo:"trivia", texto:{es:"Carlos Pellicer fue principalmente reconocido como:",yt:"Carlos Pellicer laj ts'áab u k'aaba' ba'ax?"},
+        opciones:{es:["Arqueólogo","Político","Poeta","Pintor"],yt:["Jach winik","Nojoch winik","T'an winik","Ts'ib winik"]}, correcta:2,
+        explicacion:{es:"Carlos Pellicer fue el más importante poeta tabasqueño, nominado al Nobel de Literatura.",yt:"Carlos Pellicer t'an winik nojoch ti' Tabasco."} },
+      { tipo:"vf", texto:{es:"El museo del CICOM tiene más de 40,000 piezas arqueológicas.",yt:"Le museo CICOM yaan mas 40,000 tunich."},
+        opciones:{es:["Verdadero","Falso"],yt:["Ja'","Ma'"]}, correcta:0,
+        explicacion:{es:"Sí, el CICOM alberga una de las colecciones arqueológicas olmecas y mayas más importantes del mundo.",yt:"Ja', yaan mas 40,000 tunich olmeca yéetel maya."} }
+    ]
+  },
+  {
+    id: 2, desbloqueado: false,
+    nombre: { es: "Malecón Carlos A. Madrazo", yt: "Bisir Jom Carlos Madrazo" },
+    tipo: { es: "Trivia + Completar", yt: "Tribia + Chupa" },
+    ilustracion: "🌊🐆🌅",
+    vocab: ["jom","bisir jom","k'in","yajal"],
+    pista: {
+      es: "Tu mono nadó en el río hasta el malecón. ¿Qué río bordea el Malecón de Villahermosa?",
+      yt: "Choko beel jom. ¿Ba'ax jom ti' Bisir Jom Villahermosa?"
+    },
+    historia: {
+      es: `<p>El Malecón Carlos A. Madrazo es el paseo ribereño más importante de Villahermosa, bordeando las aguas del Río Grijalva en su paso por la ciudad. Fue modernizado y ampliado en múltiples etapas durante el siglo XX y XXI.</p>
+<p>El malecón lleva el nombre de Carlos A. Madrazo, político tabasqueño que fue gobernador del estado (1959-1964) y presidente del PRI, conocido por impulsar reformas democráticas dentro del partido.</p>
+<p>Hoy el malecón es el espacio de recreación urbana más frecuentado de Villahermosa, con jardines, esculturas, restaurantes y vistas al río que identifican la imagen de la ciudad en todo el mundo.</p>`,
+      yt: `<p>Bisir Jom Carlos Madrazo le nojoch beel jom ti' Villahermosa, ti' pool Jom Grijalva. Laj ts'áab nojoch tu siglo XX yéetel XXI.</p>
+<p>U k'aaba' Carlos A. Madrazo, winik tabasqueño gobernador (1959-1964) yéetel presidente PRI.</p>
+<p>K'in le bisir jom le nojoch yajal winik ti' Villahermosa, yaan yajal, ts'ib, k'ua' yéetel jom.</p>`
+    },
+    curiosidades: [
+      "El Río Grijalva que bordea el malecón nace en los Altos de Chiapas y desemboca en el Golfo de México, recorriendo más de 480 km.",
+      "Carlos A. Madrazo fue asesinado en un accidente de avión en 1969 que muchos consideraron no accidental.",
+      "En el malecón se encuentra el monumento al Balam (jaguar), animal sagrado de los mayas y símbolo de Tabasco.",
+      "El Grijalva es el segundo río más caudaloso de México, solo superado por el Usumacinta, que forma la frontera con Guatemala."
+    ],
+    vocabulario: [
+      { yt: "jom", es: "río" }, { yt: "bisir jom", es: "malecón/orilla del río" },
+      { yt: "k'in", es: "sol/día" }, { yt: "yajal", es: "parque/jardín" }
+    ],
+    frases: [
+      { yt: "Bisir jom Grijalva ti' Villahermosa.", es: "La orilla del río Grijalva en Villahermosa." },
+      { yt: "K'in nojoch ti' bisir jom.", es: "El sol es grande en el malecón." }
+    ],
+    preguntas: [
+      { tipo:"trivia", texto:{es:"¿Qué río bordea el Malecón Carlos A. Madrazo?",yt:"¿Ba'ax jom ti' Bisir Jom Carlos Madrazo?"},
+        opciones:{es:["Río Usumacinta","Río Carrizal","Río Grijalva","Río Mezcalapa"],yt:["Jom Usumacinta","Jom Carrizal","Jom Grijalva","Jom Mezcalapa"]}, correcta:2,
+        explicacion:{es:"El Malecón bordea las aguas del Río Grijalva, el segundo más caudaloso de México.",yt:"Bisir Jom yaan ti' pool Jom Grijalva."} },
+      { tipo:"completar", texto:{es:"Completa: Carlos A. Madrazo fue ______ de Tabasco entre 1959 y 1964.",yt:"Ts'aan: Carlos Madrazo ______ Tabasco 1959-1964."},
+        respuesta:{es:["gobernador"],yt:["gobernador"]},
+        explicacion:{es:"Carlos A. Madrazo fue gobernador de Tabasco entre 1959 y 1964.",yt:"Carlos Madrazo gobernador Tabasco 1959-1964."} },
+      { tipo:"vf", texto:{es:"El Río Grijalva es el río más caudaloso de México.",yt:"Jom Grijalva le nojoch jom mas ti' México."},
+        opciones:{es:["Verdadero","Falso"],yt:["Ja'","Ma'"]}, correcta:1,
+        explicacion:{es:"Falso. El Grijalva es el segundo más caudaloso; el primero es el Usumacinta, que forma la frontera con Guatemala.",yt:"Ma'. Jom Usumacinta le nojoch, Grijalva ka' ti' México."} },
+      { tipo:"trivia", texto:{es:"¿Qué animal sagrado maya tiene un monumento en el malecón?",yt:"¿Ba'ax animalo k'ub maya yaan ti' bisir jom?"},
+        opciones:{es:["Quetzal","Serpiente emplumada","Balam (jaguar)","Tapir"],yt:["Quetzal","Chan ts'ulub","Balam","Tapir"]}, correcta:2,
+        explicacion:{es:"En el malecón se encuentra el monumento al Balam, el jaguar sagrado de los mayas y símbolo de Tabasco.",yt:"Balam le animalo k'ub maya yaan ti' bisir jom."} }
+    ]
+  },
+  {
+    id: 3, desbloqueado: false,
+    nombre: { es: "Catedral de la Asunción", yt: "Nojoch Otot Dios" },
+    tipo: { es: "Trivia + Completar", yt: "Tribia + Chupa" },
+    ilustracion: "⛪🔔",
+    vocab: ["otot Dios","k'ub","k'a dios","yum"],
+    pista: {
+      es: "Tu mono llegó a la plaza central. ¿Frente a qué plaza se ubica la catedral?",
+      yt: "Choko k'uch plaza. ¿Ti' jéel ba'ax yajal yaan Nojoch Otot Dios?"
+    },
+    historia: {
+      es: `<p>La Catedral de la Asunción de Villahermosa es el templo católico más antiguo e importante del estado de Tabasco. Su construcción comenzó en el siglo XVII, aunque ha sido reconstruida y restaurada en múltiples ocasiones debido a inundaciones y cambios sísmicos.</p>
+<p>Se ubica en el corazón del Centro Histórico de Villahermosa, frente al Parque Juárez, principal plaza pública de la ciudad. Su arquitectura combina elementos coloniales con restauraciones del siglo XX.</p>
+<p>Durante la época del radicalismo de Garrido Canabal en los años 30, la catedral fue clausurada y utilizada como bodega; fue reabierta al culto tras el fin de su gobierno.</p>`,
+      yt: `<p>Nojoch Otot Dios Villahermosa otot k'ub nojoch ti' Tabasco. U ts'ib tu siglo XVII, ma' jach xan túub' ti' jom yéetel sísmico.</p>
+<p>Yaan ti' chumuk casco histórico Villahermosa, ti' jéel Parque Juárez. U nojoch otot colonial yéetel siglo XX.</p>
+<p>Tu jaab' Garrido Canabal, le nojoch otot dios laj ts'áab k'ub; laj túub' k'uchul u ja'ab gobierno.</p>`
+    },
+    curiosidades: [
+      "La Catedral de la Asunción fue incendiada durante el anticlericalismo de Garrido Canabal en 1935.",
+      "El estilo actual de la catedral es neoclásico, con elementos barrocos en su interior.",
+      "La campana principal de la catedral fue fundida en el siglo XVIII y aún funciona.",
+      "Villahermosa es una de las pocas capitales mexicanas donde la catedral no da directamente a la plaza principal."
+    ],
+    vocabulario: [
+      { yt: "otot Dios", es: "casa de Dios/iglesia" }, { yt: "k'ub", es: "dios/sagrado" },
+      { yt: "k'a dios", es: "gracias a Dios" }, { yt: "yum", es: "señor/padre" }
+    ],
+    frases: [
+      { yt: "Nojoch otot Dios ti' chumuk peten.", es: "La gran iglesia en el centro de la ciudad." },
+      { yt: "K'a dios ti' le yum.", es: "Gracias al Señor." }
+    ],
+    preguntas: [
+      { tipo:"completar", texto:{es:"Completa: la construcción de la Catedral de la Asunción comenzó en el siglo ______ (usa números romanos).",yt:"Ts'aan: Nojoch Otot Dios laj p'aatal tu siglo ______."},
+        respuesta:{es:["XVII","17"],yt:["XVII","17"]},
+        explicacion:{es:"La catedral comenzó a construirse en el siglo XVII, aunque ha sido restaurada varias veces.",yt:"Nojoch Otot Dios laj p'aatal tu siglo XVII."} },
+      { tipo:"vf", texto:{es:"Durante el gobierno de Garrido Canabal, la catedral fue utilizada como bodega.",yt:"Tu jaab' Garrido, le otot Dios laj ts'áab k'ub ti' ba'al."},
+        opciones:{es:["Verdadero","Falso"],yt:["Ja'","Ma'"]}, correcta:0,
+        explicacion:{es:"Correcto. Garrido Canabal fue famoso por su anticlericalismo radical y clausuró los templos en Tabasco.",yt:"Ja'. Garrido laj ts'áab k'ub le otot Dios."} },
+      { tipo:"trivia", texto:{es:"¿En qué lugar se ubica la Catedral frente a?",yt:"¿Ti' ba'ax yaan Nojoch Otot Dios?"},
+        opciones:{es:["Parque La Venta","Parque Juárez","Malecón","CICOM"],yt:["Yajal La Venta","Yajal Juárez","Bisir Jom","CICOM"]}, correcta:1,
+        explicacion:{es:"La catedral se ubica frente al Parque Juárez, la principal plaza del Centro Histórico.",yt:"Nojoch Otot Dios yaan ti' jéel Yajal Juárez."} },
+      { tipo:"trivia", texto:{es:"¿Cuál es el estilo arquitectónico predominante de la catedral actual?",yt:"¿Ba'ax nojoch otot ti' le catedral?"},
+        opciones:{es:["Barroco puro","Neoclásico","Gótico","Moderno"],yt:["Barroco","Neoclásico","Gótico","Moderno"]}, correcta:1,
+        explicacion:{es:"El estilo predominante es neoclásico, con algunos elementos barrocos en su decoración interior.",yt:"Neoclásico le nojoch otot catedral."} }
+    ]
+  },
+  {
+    id: 4, desbloqueado: false,
+    nombre: { es: "Zona Luz – Centro Histórico", yt: "Peten K'in – Chumuk Nojoch" },
+    tipo: { es: "Trivia + V/F", yt: "Tribia + Ja'/Ma'" },
+    ilustracion: "🏙️🐟🎨",
+    vocab: ["k'ua'","beel","k'ay","xi'ipal"],
+    pista: {
+      es: "Tu mono robó un pejelagarto asado en un puesto del mercado... ¿cómo se llama el principal mercado tradicional de la Zona Luz?",
+      yt: "Choko laj k'ubah pejelagarto ti' k'ay. ¿Ba'ax k'aaba' le nojoch k'ay ti' Zona Luz?"
+    },
+    historia: {
+      es: `<p>La Zona Luz es el corazón peatonal del Centro Histórico de Villahermosa. Comprende las calles y plazas que rodean la Zona Remodelada, popularmente conocida como "La Zona Luz", donde confluyen comercio, cultura y gastronomía tabasqueña.</p>
+<p>Aquí se encuentran edificios de arquitectura porfiriana y republicana del siglo XIX y XX, así como el Mercado Pino Suárez, uno de los mercados más tradicionales del estado.</p>
+<p>La gastronomía de la zona incluye platillos típicos tabasqueños: el pejelagarto asado, el pozol (bebida ancestral de maíz y cacao), y los tamales de chipilín, todos con profundas raíces en la cultura yokot'an y maya.</p>`,
+      yt: `<p>Peten K'in le chumuk beel xi'ipal ti' Villahermosa. Yaan beel yéetel yajal Zona Remodelada, "La Zona Luz", ti' k'ay, cultura yéetel wa'alib tabasqueño.</p>
+<p>Ti' yaan otot porfiriana siglo XIX-XX yéetel k'ay Pino Suárez.</p>
+<p>Le wa'alib peten: pejelagarto, pozol (u'u' ixim yéetel cacao), yéetel tamal chipilín, ba'ax yokot'an yéetel maya.</p>`
+    },
+    curiosidades: [
+      "El pozol es una bebida prehispánica de maíz y cacao que los chontales de Tabasco han consumido durante siglos; está siendo estudiado como alimento funcional.",
+      "El pejelagarto es un pez prehistórico, prácticamente sin cambios evolutivos en 100 millones de años, símbolo gastronómico de Tabasco.",
+      "La Zona Luz fue el primer proyecto de renovación urbana del Centro Histórico en México en los años 1980.",
+      "En la Zona Luz se celebra cada año la Feria Tabasco, una de las ferias estatales más visitadas del sureste mexicano."
+    ],
+    vocabulario: [
+      { yt: "k'ua'", es: "comida/comer" }, { yt: "beel", es: "camino/calle" },
+      { yt: "k'ay", es: "mercado/comprar" }, { yt: "xi'ipal", es: "niño/joven" }
+    ],
+    frases: [
+      { yt: "K'ua' tabasqueño ti' le k'ay.", es: "Comida tabasqueña en el mercado." },
+      { yt: "Beel xi'ipal ti' peten.", es: "Camino joven en la ciudad." }
+    ],
+    preguntas: [
+      { tipo:"trivia", texto:{es:"¿Cuál es una bebida ancestral típica de Tabasco hecha con maíz y cacao?",yt:"¿Ba'ax u'u' yokot'an yéetel ixim yéetel cacao?"},
+        opciones:{es:["Atole","Pozol","Tejate","Champurrado"],yt:["Atole","Pozol","Tejate","Champurrado"]}, correcta:1,
+        explicacion:{es:"El pozol es una bebida prehispánica de maíz y cacao profundamente arraigada en la cultura tabasqueña.",yt:"Le pozol u'u' ixim yéetel cacao ti' Tabasco."} },
+      { tipo:"vf", texto:{es:"El pejelagarto es un pez que ha evolucionado significativamente en los últimos 100 millones de años.",yt:"Le pejelagarto laj cambiar tu 100 millones jaab'."},
+        opciones:{es:["Verdadero","Falso"],yt:["Ja'","Ma'"]}, correcta:1,
+        explicacion:{es:"Falso. El pejelagarto es un pez 'fósil viviente' que ha permanecido casi sin cambios evolutivos.",yt:"Ma'. Le pejelagarto ma' laj cambiar."} },
+      { tipo:"trivia", texto:{es:"¿Cómo se llama el principal mercado tradicional en la Zona Luz?",yt:"¿Ba'ax k'aaba' nojoch k'ay ti' Zona Luz?"},
+        opciones:{es:["Mercado Juárez","Mercado Pino Suárez","Mercado Tabasco","Mercado Central"],yt:["K'ay Juárez","K'ay Pino Suárez","K'ay Tabasco","K'ay Chumuk"]}, correcta:1,
+        explicacion:{es:"El Mercado Pino Suárez es el más tradicional del Centro Histórico y un referente gastronómico.",yt:"K'ay Pino Suárez nojoch k'ay ti' chumuk."} },
+      { tipo:"trivia", texto:{es:"¿Cuál fue el primer proyecto de renovación urbana del Centro Histórico en México?",yt:"¿Ba'ax jun p'éel renovación nojoch ti' México?"},
+        opciones:{es:["Tepito, CDMX","Zona Rosa, CDMX","Zona Luz, Villahermosa","Barrio Antiguo, Monterrey"],yt:["Tepito","Zona Rosa","Zona Luz Villahermosa","Barrio Antiguo"], }, correcta:2,
+        explicacion:{es:"La Zona Luz de Villahermosa fue el primer proyecto de renovación de un centro histórico en México, en los años 80.",yt:"Zona Luz Villahermosa jun p'éel renovación ti' México tu jaab' 80."} }
+    ]
+  },
+  {
+    id: 5, desbloqueado: false,
+    nombre: { es: "Museo de Antropología Carlos Pellicer", yt: "Museo Carlos Pellicer" },
+    tipo: { es: "Trivia + Completar", yt: "Tribia + Chupa" },
+    ilustracion: "🏺🗿📜",
+    vocab: ["tunich","ts'ip'lé","winik","xook'"],
+    pista: {
+      es: "Tu mono escondió algo detrás de una vasija maya... ¿Qué réplica famosa de Palenque guarda este museo?",
+      yt: "Choko ts'aab ba'al ti' jéel tunich maya... ¿Ba'ax réplica Palenque yaan museo?"
+    },
+    historia: {
+      es: `<p>El Museo Regional de Antropología "Carlos Pellicer Cámara" es el más importante repositorio de la cultura arqueológica del estado. Forma parte del complejo del CICOM y alberga más de 3,000 piezas exhibidas, representativas de las culturas olmeca, maya, zoque y chontal de Tabasco.</p>
+<p>El museo lleva el nombre del insigne poeta Carlos Pellicer (1897-1977), quien fue un apasionado coleccionista de arte prehispánico y donó piezas fundamentales de su colección personal al estado.</p>
+<p>Las salas más visitadas son las de la cultura olmeca y las dedicadas a la vida cotidiana de los pueblos originarios de Tabasco, incluyendo objetos de la cultura chontal yokot'an.</p>`,
+      yt: `<p>Museo Carlos Pellicer nojoch tunich ti' Tabasco. Yaan ti' CICOM yéetel mas 3,000 tunich olmeca, maya, zoque yéetel chontal.</p>
+<p>U k'aaba' poeta Carlos Pellicer (1897-1977), u ch'a'abal ts'ib tunich yéetel museo.</p>
+<p>Le salas olmeca yéetel winik chontal yokot'an le mas ts'aan.</p>`
+    },
+    curiosidades: [
+      "Carlos Pellicer coleccionó a lo largo de su vida buena parte de las más de 3,000 piezas arqueológicas que hoy forman el acervo del museo.",
+      "El museo tiene una réplica de la tumba del Templo de las Inscripciones de Palenque, uno de los hallazgos mayas más importantes.",
+      "En el museo se exhiben piezas yokot'an (chontal) como vasijas ceremoniales, instrumentos musicales y objetos domésticos.",
+      "La colección olmeca del museo incluye cabezas de barro, hachas ceremoniales y la famosa 'señora de barro' de La Venta."
+    ],
+    vocabulario: [
+      { yt: "tunich", es: "piedra/objeto arqueológico" }, { yt: "ts'ip'lé", es: "pequeño/antiguo" },
+      { yt: "winik", es: "persona/gente" }, { yt: "xook'", es: "leer/saber" }
+    ],
+    frases: [
+      { yt: "Nojoch tunich yaan ti' museo.", es: "Grandes piedras hay en el museo." },
+      { yt: "Xook' u ts'ib le winik ka'ach.", es: "Lee la escritura de la gente antigua." }
+    ],
+    preguntas: [
+      { tipo:"completar", texto:{es:"Completa: el Museo Carlos Pellicer exhibe más de ______ piezas arqueológicas.",yt:"Ts'aan: Museo Carlos Pellicer yaan mas ______ tunich."},
+        respuesta:{es:["3000","3,000","tres mil"],yt:["3000","3,000"]},
+        explicacion:{es:"El museo exhibe más de 3,000 piezas representativas de las culturas prehispánicas de Tabasco.",yt:"Mas 3,000 tunich yaan ti' museo."} },
+      { tipo:"vf", texto:{es:"Carlos Pellicer nació en Villahermosa en 1897.",yt:"Carlos Pellicer patal Villahermosa tu jaab' 1897."},
+        opciones:{es:["Verdadero","Falso"],yt:["Ja'","Ma'"]}, correcta:0,
+        explicacion:{es:"Correcto. Carlos Pellicer nació en Villahermosa el 16 de enero de 1897.",yt:"Ja'. Carlos Pellicer patal Villahermosa 1897."} },
+      { tipo:"trivia", texto:{es:"¿Qué tiene el museo relacionado con Palenque?",yt:"¿Ba'ax yaan museo ti' jéel Palenque?"},
+        opciones:{es:["Un mural original","Una réplica de tumba","Escultura del rey Pakal","Jade auténtico"],yt:["Ts'ib nojoch","Réplica tumba","Ts'ib rey Pakal","Jade real"]}, correcta:1,
+        explicacion:{es:"El museo tiene una réplica de la famosa tumba del Templo de las Inscripciones de Palenque.",yt:"Yaan réplica tumba Palenque ti' museo."} },
+      { tipo:"trivia", texto:{es:"¿Cuáles culturas representa principalmente el museo?",yt:"¿Ba'ax winik u ts'aan le museo?"},
+        opciones:{es:["Azteca y Tolteca","Olmeca, Maya y Chontal","Solo Maya","Zapoteca y Mixteca"],yt:["Azteca yéetel Tolteca","Olmeca, Maya yéetel Chontal","Maya","Zapoteca"], }, correcta:1,
+        explicacion:{es:"El museo representa principalmente las culturas olmeca, maya, zoque y chontal (yokot'an) de Tabasco.",yt:"Olmeca, Maya yéetel Chontal le winik ti' museo."} }
+    ]
+  },
+  {
+    id: 6, desbloqueado: false,
+    nombre: { es: "Zona Arqueológica de Comalcalco", yt: "Tunich Comalcalco" },
+    tipo: { es: "Trivia + Completar", yt: "Tribia + Chupa" },
+    ilustracion: "🧱🌿🍫",
+    vocab: ["tunich","k'ua' cacao","tun","nojoch"],
+    pista: {
+      es: "Tu mono encontró una pirámide de ladrillos. ¿Qué hace única a Comalcalco entre las zonas mayas?",
+      yt: "Choko k'uch tunich ladrillo. ¿Ba'ax especial Comalcalco ti' maya?"
+    },
+    historia: {
+      es: `<p>La Zona Arqueológica de Comalcalco es la ciudad maya más occidental conocida y la única construida enteramente con ladrillos de barro cocido en lugar de piedra caliza, lo que la distingue de todas las demás ciudades mayas de Mesoamérica.</p>
+<p>Florece entre los años 300 y 900 d.C., durante el período Clásico maya. Su nombre en náhuatl significa "lugar de los comales" (utensilios de cocina), aunque su nombre original en maya no se conoce con certeza.</p>
+<p>La zona está vinculada históricamente con el cultivo del cacao, planta sagrada para los mayas, que fue la base económica de la región y sigue siendo un cultivo fundamental en Tabasco hoy en día.</p>`,
+      yt: `<p>Tunich Comalcalco le nojoch maya mas yaan ti' poniente yéetel jun p'éel ts'aab yéetel ladrillo barro, ma' tunich caliza, especial ti' ba'ax maya.</p>
+<p>Laj ch'a'abal 300-900 d.C. tu kin maya Clásico. U k'aaba' náhuatl "lugar comales", ma' u k'aaba' maya.</p>
+<p>Comalcalco vinculado k'ua' cacao, u ts'aan k'ub maya, u ba'al económico yéetel peten Tabasco k'in.</p>`
+    },
+    curiosidades: [
+      "Algunos ladrillos de Comalcalco tienen inscripciones o dibujos hechos antes de ser cocidos; se han encontrado más de 300 ladrillos con inscripciones.",
+      "Comalcalco fue la capital de la región maya occidental conocida como el 'Reino del Cacao'.",
+      "La Gran Acrópolis de Comalcalco es el edificio más imponente y su cima permite ver el horizonte a kilómetros de distancia.",
+      "El tabaco y el cacao de Tabasco eran tan valiosos para los mayas que se usaban como moneda en el comercio mesoamericano."
+    ],
+    vocabulario: [
+      { yt: "tunich", es: "piedra/ladrillo" }, { yt: "k'ua' cacao", es: "comida de cacao" },
+      { yt: "tun", es: "año/tiempo sagrado" }, { yt: "nojoch", es: "grande/importante" }
+    ],
+    frases: [
+      { yt: "Nojoch tunich maya ti' Comalcalco.", es: "La gran piedra maya en Comalcalco." },
+      { yt: "K'ua' cacao tu tun ka'ach.", es: "Cacao sagrado en los tiempos antiguos." }
+    ],
+    preguntas: [
+      { tipo:"trivia", texto:{es:"¿Qué hace única a la Zona Arqueológica de Comalcalco entre las ciudades mayas?",yt:"¿Ba'ax especial Comalcalco ti' ba'ax maya?"},
+        opciones:{es:["Está bajo el agua","Está hecha de ladrillos de barro","Tiene escritura romana","Es la más grande"],yt:["Ti' jom","Ts'aab ladrillo barro","Ts'ib romano","Nojoch mas"]}, correcta:1,
+        explicacion:{es:"Comalcalco es la única ciudad maya construida con ladrillos de barro cocido en lugar de piedra caliza.",yt:"Comalcalco jun p'éel ts'aab ladrillo barro, ma' tunich caliza."} },
+      { tipo:"vf", texto:{es:"Comalcalco fue construida principalmente en el período Clásico maya (300-900 d.C.)",yt:"Comalcalco ts'aab tu jaab' 300-900 d.C."},
+        opciones:{es:["Verdadero","Falso"],yt:["Ja'","Ma'"]}, correcta:0,
+        explicacion:{es:"Correcto. Comalcalco floreció durante el período Clásico maya entre 300 y 900 d.C.",yt:"Ja'. Comalcalco laj ch'a'abal 300-900 d.C."} },
+      { tipo:"completar", texto:{es:"Completa: la planta sagrada vinculada económicamente con Comalcalco era el ______.",yt:"Ts'aan: u ts'aan k'ub vinculado Comalcalco le ______."},
+        respuesta:{es:["cacao"],yt:["cacao"]},
+        explicacion:{es:"El cacao era la planta sagrada de los mayas y la base económica de la región de Comalcalco.",yt:"Cacao planta k'ub maya yéetel ba'al económico Comalcalco."} },
+      { tipo:"trivia", texto:{es:"¿Qué se ha encontrado en más de 300 ladrillos de Comalcalco?",yt:"¿Ba'ax laj k'uchul ti' mas 300 ladrillo Comalcalco?"},
+        opciones:{es:["Pinturas en color rojo","Inscripciones y dibujos","Fragmentos de cerámica","Restos humanos"],yt:["Ts'ib chak","Ts'ib yéetel ts'ib","Cerámica","Winik"], }, correcta:1,
+        explicacion:{es:"Se han encontrado más de 300 ladrillos con inscripciones o dibujos tallados antes de ser cocidos.",yt:"Mas 300 ladrillo yaan ts'ib yéetel ts'ib ts'aab."} }
+    ]
+  },
+  {
+    id: 7, desbloqueado: false,
+    nombre: { es: "Parque-Museo La Venta", yt: "Yajal-Museo La Venta" },
+    tipo: { es: "Trivia + V/F", yt: "Tribia + Ja'/Ma'" },
+    ilustracion: "🗿🌴☀️",
+    vocab: ["tunich winik","balam","k'in","nojoch"],
+    pista: {
+      es: "Tu mono trepó sobre una enorme cabeza de piedra. ¿Qué cultura las esculpió?",
+      yt: "Choko bin tunich winik nojoch. ¿Ba'ax winik u ts'ib le tunich?"
+    },
+    historia: {
+      es: `<p>El Parque-Museo La Venta es uno de los sitios arqueológicos al aire libre más importantes del mundo. Fue creado en 1958 para albergar las esculturas monumentales olmecas que fueron trasladadas desde el yacimiento arqueológico de La Venta, en el municipio de Huimanguillo.</p>
+<p>La atracción principal son las cuatro Cabezas Colosales Olmecas, esculturas de basalto que representan a gobernantes de la civilización olmeca, datadas entre 900 y 400 a.C. Cada cabeza pesa entre 6 y 40 toneladas.</p>
+<p>La civilización olmeca es considerada la "cultura madre" de Mesoamérica, pues sus avances en calendarios, escritura y organización social influyeron en todas las culturas posteriores, incluyendo la maya.</p>`,
+      yt: `<p>Yajal-Museo La Venta jun p'éel museo tunich olmeca ti' chan chumuk. Laj túub' 1958 ti' tunich winik olmeca ti' La Venta, Huimanguillo.</p>
+<p>Le nojoch ts'aan tunich winik olmeca, basalto ts'ib, winik olmeca 900-400 a.C. Jun p'éel tunich 6-40 toneladas.</p>
+<p>Olmeca "Nojoch winik" Mesoamérica, u ch'a'abal calendario yéetel ts'ib ti' ba'ax winik.</p>`
+    },
+    curiosidades: [
+      "Las Cabezas Colosales Olmecas de La Venta son únicas en el mundo; solo existen 17 en total, distribuidas en tres sitios arqueológicos de México.",
+      "El basalto utilizado para esculpirlas fue transportado más de 100 km desde la Sierra de Los Tuxtlas en Veracruz, sin ruedas ni animales de carga.",
+      "Cada cabeza tiene rasgos faciales distintos, lo que sugiere que representan a individuos específicos, posiblemente gobernantes o jugadores de pelota.",
+      "Carlos Pellicer, el poeta tabasqueño, fue el impulsor del traslado y creación del parque en 1958."
+    ],
+    vocabulario: [
+      { yt: "tunich winik", es: "cabeza de piedra" }, { yt: "balam", es: "jaguar" },
+      { yt: "k'in", es: "sol/día" }, { yt: "nojoch", es: "grande/importante" }
+    ],
+    frases: [
+      { yt: "Nojoch tunich winik olmeca.", es: "La gran cabeza de piedra olmeca." },
+      { yt: "Balam k'in ti' La Venta.", es: "El jaguar del sol en La Venta." }
+    ],
+    preguntas: [
+      { tipo:"trivia", texto:{es:"¿En qué año fue creado el Parque-Museo La Venta?",yt:"¿Ba'ax jaab' laj túub' Yajal-Museo La Venta?"},
+        opciones:{es:["1940","1958","1972","1985"],yt:["1940","1958","1972","1985"]}, correcta:1,
+        explicacion:{es:"El Parque-Museo La Venta fue creado en 1958 gracias al impulso del poeta Carlos Pellicer.",yt:"Yajal-Museo laj túub' 1958."} },
+      { tipo:"trivia", texto:{es:"¿De qué material están hechas las Cabezas Colosales Olmecas?",yt:"¿Ba'ax tunich le tunich winik olmeca?"},
+        opciones:{es:["Granito","Mármol","Basalto","Caliza"],yt:["Granito","Mármol","Basalto","Caliza"]}, correcta:2,
+        explicacion:{es:"Las cabezas son de basalto, una roca volcánica traída desde más de 100 km de distancia.",yt:"Basalto le tunich, mas 100 km u jeets'el."} },
+      { tipo:"vf", texto:{es:"La civilización olmeca es considerada la 'cultura madre' de Mesoamérica.",yt:"Olmeca 'nojoch winik' Mesoamérica."},
+        opciones:{es:["Verdadero","Falso"],yt:["Ja'","Ma'"]}, correcta:0,
+        explicacion:{es:"Sí, la olmeca es la cultura más antigua y fundacional de Mesoamérica, precursora de la maya.",yt:"Ja', olmeca nojoch ka' winik ti' Mesoamérica."} },
+      { tipo:"trivia", texto:{es:"¿Cuántas Cabezas Colosales Olmecas existen en total en México?",yt:"¿Jayp'éel tunich winik olmeca yaan ti' México?"},
+        opciones:{es:["10","17","25","32"],yt:["10","17","25","32"]}, correcta:1,
+        explicacion:{es:"Existen 17 cabezas colosales en total, distribuidas en La Venta, San Lorenzo y Tres Zapotes.",yt:"17 tunich winik yaan ti' México."} }
+    ]
+  }
+];
+
+// ===================================================
+// ESTADO DEL JUEGO
+// ===================================================
+let estado = {
+  idioma: 'es',   // 'es' o 'yt'
+  puntos: 0,
+  lugarActual: null,
+  tabActual: 'historia',
+  preguntaActual: 0,
+  preguntasRespondidas: 0,
+  completados: new Set(),
+  vocabAprendido: new Set()
+};
+
+// ===================================================
+// DICCIONARIO UI
+// ===================================================
+const UI = {
+  es: {
+    'idioma-label': 'YT', 'hud-idioma-label': 'YT', 'lugar-idioma-label': 'YT',
+    'txt-titulo': 'Yoko Ajpum',
+    'txt-subtitulo': 'El Mono del Cielo',
+    'txt-desc': 'Tu mono mascota escapó y se perdió entre los sitios históricos de Villahermosa. Recorre 8 lugares, descubre su historia y aprende palabras en <strong>yokot\'an</strong> para encontrarlo.',
+    'txt-btn-inicio': 'Comenzar aventura ✨',
+    'txt-credito': 'UJAT · CCYTET CHTI 2026 · Villahermosa, Tabasco',
+    'mapa-titulo': 'Mapa de Villahermosa',
+    'mapa-subtitulo': 'Elige un lugar para buscar a tu mono 🐒',
+    'tab-historia': '📜 Historia',
+    'tab-reto': '🎯 Reto',
+    'tab-curiosidades': '✨ Curiosidades',
+    'tab-yokotan': "🌿 Yokot'an",
+    'txt-volver': 'Mapa',
+    'frases-titulo': "Frases del lugar",
+    'btn-reiniciar': 'Jugar de nuevo 🔄',
+    'vocab-aprendido-titulo': "Yokot'an que aprendiste hoy:",
+    'final-titulo': '¡Encontraste a Yoko!',
+  },
+  yt: {
+    'idioma-label': 'ES', 'hud-idioma-label': 'ES', 'lugar-idioma-label': 'ES',
+    'txt-titulo': 'Yoko Ajpum',
+    'txt-subtitulo': 'Le Choko Ka\'an',
+    'txt-desc': "U choko ch'a'abal ka'ach yéetel bin beel ba'ax yajal Villahermosa. Bin 8 k'inal, xook' u ts'ib yéetel t'an <strong>yokot'an</strong>.",
+    'txt-btn-inicio': "Bin beel ✨",    'txt-credito': 'UJAT · CCYTET CHTI 2026 · Villahermosa, Tabasco',
+    'mapa-titulo': "Mapa Villahermosa",
+    'mapa-subtitulo': "Ts'aan k'inal ti' u choko 🐒",
+    'tab-historia': '📜 Ts\'ib',
+    'tab-reto': '🎯 Reto',
+    'tab-curiosidades': "✨ Ba'ax",
+    'tab-yokotan': "🌿 Yokot'an",
+    'txt-volver': "Mapa",
+    'frases-titulo': "T'an k'inal",
+    'btn-reiniciar': "Bin beel ka' 🔄",
+    'vocab-aprendido-titulo': "Yokot'an xook' k'in:",
+    'final-titulo': '¡K\'uch Yoko!',
+  }
+};
+
+function setIdioma(idioma) {
+  estado.idioma = idioma;
+  const d = UI[idioma];
+  for (const id in d) {
+    const el = document.getElementById(id);
+    if (el) el.innerHTML = d[id];
+  }
+}
+
+function toggleIdioma() {
+  setIdioma(estado.idioma === 'es' ? 'yt' : 'es');
+  // Re-renderizar contenido actual si estamos en lugar
+  if (document.getElementById('lugar').classList.contains('activa')) {
+    renderLugar(estado.lugarActual);
+    cambiarTab(document.querySelector(`.tab[data-tab="${estado.tabActual}"]`), estado.tabActual, true);
+  }
+  if (document.getElementById('mapa').classList.contains('activa')) {
+    renderMapa();
+  }
+}
+
+// ===================================================
+// NAVEGACIÓN
+// ===================================================
+function irAPantalla(id) {
+  document.querySelectorAll('.pantalla').forEach(p => p.classList.remove('activa'));
+  document.getElementById(id).classList.add('activa');
+  window.scrollTo(0,0);
+}
+
+function irAMapa() {
+  irAPantalla('mapa');
+  renderMapa();
+}
+
+function reiniciar() {
+  estado.puntos = 0;
+  estado.completados = new Set();
+  estado.vocabAprendido = new Set();
+  DATOS_LUGARES.forEach((l,i) => { l.desbloqueado = (i===0); });
+  irAPantalla('portada');
+  setIdioma('es');
+}
+
+// ===================================================
+// RENDER MAPA
+// ===================================================
+function renderMapa() {
+  const L = estado.idioma;
+  const grid = document.getElementById('grid-lugares');
+  grid.innerHTML = '';
+  DATOS_LUGARES.forEach((lugar, idx) => {
+    const completado = estado.completados.has(idx);
+    const bloqueado = !lugar.desbloqueado;
+    const CARD_COLORS = ['#5BC8F5','#FFCC00','#3CB54A','#FF8C00','#2FAEE0','#FFB700','#3CB54A','#5BC8F5'];
+    const card = document.createElement('div');
+    card.className = `card-lugar${completado?' completado':''}${bloqueado?' bloqueado':''}`;
+    card.style.setProperty('--card-color', CARD_COLORS[idx]);
+    card.innerHTML = `
+      <p class="lugar-num">${L==='es'?'Lugar':'K\'inal'} ${idx+1}</p>
+      <p class="lugar-nombre">${lugar.nombre[L]}</p>
+      <span class="lugar-tipo">${lugar.tipo[L]}</span>
+      <p class="lugar-vocab">🌿 ${lugar.vocab.join(' · ')}</p>
+      <span class="badge-status">${completado?'✅':bloqueado?'🔒':'🐒'}</span>
+    `;
+    if (!bloqueado) {
+      card.onclick = () => abrirLugar(idx);
+    }
+    grid.appendChild(card);
+  });
+  // HUD
+  const prog = estado.completados.size;
+  document.getElementById('hud-prog-txt').textContent = `${prog}/8`;
+  document.getElementById('barra-fill').style.width = `${(prog/8)*100}%`;
+  document.getElementById('hud-pts').textContent = `${estado.puntos} pts`;
+}
+
+// ===================================================
+// RENDER LUGAR
+// ===================================================
+function abrirLugar(idx) {
+  estado.lugarActual = idx;
+  estado.preguntaActual = 0;
+  estado.preguntasRespondidas = 0;
+  renderLugar(idx);
+  cambiarTab(document.querySelector('.tab[data-tab="historia"]'), 'historia', true);
+  irAPantalla('lugar');
+}
+
+function renderLugar(idx) {
+  const L = estado.idioma;
+  const lugar = DATOS_LUGARES[idx];
+  document.getElementById('lugar-hud-nombre').textContent = lugar.nombre[L];
+  document.getElementById('lugar-hud-pts').textContent = `${estado.puntos} pts`;
+  document.getElementById('lugar-nombre-titulo').textContent = lugar.nombre[L];
+  document.getElementById('ilustracion-emoji').textContent = lugar.ilustracion;
+  document.getElementById('ilustracion-sitio').classList.remove('explorado');
+  document.getElementById('ilustracion-hint').style.display = 'block';
+  document.getElementById('ilustracion-hint').textContent = L==='es'
+    ? '🔍 Toca la ilustración para buscar la pista de Yoko'
+    : "🔍 Ts'aan tu ilustración ti' xíimbal Yoko";
+  const pistaEl = document.getElementById('lugar-pista');
+  pistaEl.textContent = lugar.pista[L];
+  pistaEl.style.display = 'none';
+  // Historia
+  document.getElementById('historia-texto').innerHTML = lugar.historia[L];
+  // Curiosidades
+  const ul = document.getElementById('curiosidades-lista');
+  ul.innerHTML = '';
+  lugar.curiosidades.forEach(c => {
+    const li = document.createElement('li');
+    li.textContent = c;
+    ul.appendChild(li);
+  });
+  // Vocabulario
+  const vg = document.getElementById('vocab-grid');
+  vg.innerHTML = '';
+  lugar.vocabulario.forEach(v => {
+    estado.vocabAprendido.add(v.yt);
+    const card = document.createElement('div');
+    card.className = 'vocab-card';
+    card.innerHTML = `<p class="vocab-yt">${v.yt}</p><p class="vocab-es">${v.es}</p>`;
+    vg.appendChild(card);
+  });
+  // Frases
+  const fl = document.getElementById('frases-lista');
+  fl.innerHTML = '';
+  lugar.frases.forEach(f => {
+    const div = document.createElement('div');
+    div.className = 'frase-item';
+    div.innerHTML = `<span class="frase-yt">${f.yt}</span> <span class="frase-es">— ${f.es}</span>`;
+    fl.appendChild(div);
+  });
+  // Reto
+  renderPregunta();
+}
+
+// ===================================================
+// EXPLORAR ILUSTRACIÓN / BUSCAR PISTA
+// ===================================================
+function buscarPista() {
+  document.getElementById('lugar-pista').style.display = 'block';
+  document.getElementById('ilustracion-hint').style.display = 'none';
+  document.getElementById('ilustracion-sitio').classList.add('explorado');
+}
+
+// ===================================================
+// RENDER PREGUNTA
+// ===================================================
+function renderPregunta() {
+  const L = estado.idioma;
+  const lugar = DATOS_LUGARES[estado.lugarActual];
+  const idx = estado.preguntaActual;
+  const total = lugar.preguntas.length;
+  document.getElementById('reto-puntaje-display').textContent =
+    idx >= total
+      ? (L==='es' ? '¡Completado!' : "¡Ts'aab!")
+      : (L==='es' ? `Pregunta ${idx+1} de ${total}` : `Reto ${idx+1} ti' ${total}`);
+
+  if (idx >= total) {
+    // Completado
+    const contenido = document.getElementById('reto-contenido');
+    contenido.innerHTML = `
+      <div style="text-align:center;padding:2rem">
+        <p style="font-size:3rem">🎉</p>
+        <p style="font-family:'Playfair Display',serif;font-size:1.4rem;color:var(--oro-maya);margin-bottom:0.5rem">
+          ${L==='es'?'¡Reto completado!':'¡Reto ts\'aab!'}
+        </p>
+        <p style="color:var(--piedra);margin-bottom:1rem">
+          ${L==='es'?'Desbloqueas el siguiente lugar.':'Ts\'aan k\'inal ka\'.'}
+        </p>
+        <button class="btn-principal" onclick="completarLugar()" style="font-size:0.95rem">
+          ${L==='es'?'Continuar →':'Bin beel →'}
+        </button>
+      </div>`;
+    return;
+  }
+
+  const preg = lugar.preguntas[idx];
+  const texto = preg.texto[L] || preg.texto.es;
+  const contenido = document.getElementById('reto-contenido');
+
+  if (preg.tipo === 'completar') {
+    contenido.innerHTML = `
+      <div class="pregunta-box">
+        <p class="pregunta-texto">${texto}</p>
+        <div class="completar-box">
+          <input type="text" class="completar-input" id="completar-input"
+                 placeholder="${L==='es'?'Escribe tu respuesta...':"Ts'íib a t'aan..."}"
+                 onkeydown="if(event.key==='Enter')responderCompletar()">
+          <button class="btn-comprobar" id="btn-comprobar" onclick="responderCompletar()">
+            ${L==='es'?'Comprobar':"Il"}
+          </button>
+        </div>
+        <div class="feedback-box" id="feedback-box"></div>
+        <button class="btn-siguiente" id="btn-siguiente" onclick="siguientePregunta()">
+          ${L==='es'?'Siguiente →':'Ka\' →'}
+        </button>
+      </div>`;
+    return;
+  }
+
+  const opciones = preg.opciones[L] || preg.opciones.es;
+  contenido.innerHTML = `
+    <div class="pregunta-box">
+      <p class="pregunta-texto">${texto}</p>
+      <div class="opciones-grid" id="opciones-grid">
+        ${opciones.map((op, i) => `
+          <button class="opcion-btn" onclick="responder(${i})">${op}</button>
+        `).join('')}
+      </div>
+      <div class="feedback-box" id="feedback-box"></div>
+      <button class="btn-siguiente" id="btn-siguiente" onclick="siguientePregunta()">
+        ${L==='es'?'Siguiente →':'Ka\' →'}
+      </button>
+    </div>`;
+}
+
+// ===================================================
+// NORMALIZAR TEXTO (para comparar respuestas de "completar")
+// ===================================================
+function normalizarRespuesta(str) {
+  return str
+    .toString()
+    .trim()
+    .toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // quita acentos
+    .replace(/[.,]/g, ''); // quita comas/puntos (ej. "3,000" -> "3000")
+}
+
+function responderCompletar() {
+  const L = estado.idioma;
+  const lugar = DATOS_LUGARES[estado.lugarActual];
+  const preg = lugar.preguntas[estado.preguntaActual];
+  const input = document.getElementById('completar-input');
+  const btn = document.getElementById('btn-comprobar');
+  const feedback = document.getElementById('feedback-box');
+  const siguiente = document.getElementById('btn-siguiente');
+
+  const aceptadas = (preg.respuesta[L] || preg.respuesta.es).map(normalizarRespuesta);
+  const escrita = normalizarRespuesta(input.value);
+
+  if (escrita.length > 0 && aceptadas.includes(escrita)) {
+    input.disabled = true;
+    btn.disabled = true;
+    input.classList.add('correcta');
+    estado.puntos += 10;
+    feedback.className = 'feedback-box ok';
+    feedback.textContent = `✅ ${preg.explicacion[L] || preg.explicacion.es}`;
+    feedback.style.display = 'block';
+    siguiente.style.display = 'inline-block';
+  } else {
+    input.classList.add('incorrecta');
+    feedback.className = 'feedback-box mal';
+    feedback.textContent = L==='es' ? '❌ Esa no es. ¡Inténtalo de nuevo!' : "❌ Ma' jach. ¡Ka' ts'aan!";
+    feedback.style.display = 'block';
+    setTimeout(() => input.classList.remove('incorrecta'), 900);
+  }
+
+  document.getElementById('lugar-hud-pts').textContent = `${estado.puntos} pts`;
+  document.getElementById('hud-pts').textContent = `${estado.puntos} pts`;
+}
+
+function responder(idx) {
+  const L = estado.idioma;
+  const lugar = DATOS_LUGARES[estado.lugarActual];
+  const preg = lugar.preguntas[estado.preguntaActual];
+  const btns = document.querySelectorAll('.opcion-btn');
+  const feedback = document.getElementById('feedback-box');
+  const siguiente = document.getElementById('btn-siguiente');
+
+  if (idx === preg.correcta) {
+    btns.forEach(b => b.disabled = true);
+    btns[idx].classList.add('correcta');
+    estado.puntos += 10;
+    feedback.className = 'feedback-box ok';
+    feedback.textContent = `✅ ${preg.explicacion[L] || preg.explicacion.es}`;
+    feedback.style.display = 'block';
+    siguiente.style.display = 'inline-block';
+  } else {
+    btns[idx].disabled = true;
+    btns[idx].classList.add('incorrecta');
+    feedback.className = 'feedback-box mal';
+    feedback.textContent = L==='es' ? '❌ Esa no es. ¡Inténtalo de nuevo!' : "❌ Ma' jach. ¡Ka' ts'aan!";
+    feedback.style.display = 'block';
+    // El botón "Siguiente" permanece oculto: solo se avanza al acertar.
+  }
+
+  document.getElementById('lugar-hud-pts').textContent = `${estado.puntos} pts`;
+  document.getElementById('hud-pts').textContent = `${estado.puntos} pts`;
+}
+
+function siguientePregunta() {
+  estado.preguntaActual++;
+  renderPregunta();
+}
+
+function completarLugar() {
+  const idx = estado.lugarActual;
+  estado.completados.add(idx);
+  // Desbloquear siguiente
+  if (idx + 1 < DATOS_LUGARES.length) {
+    DATOS_LUGARES[idx + 1].desbloqueado = true;
+  }
+  // Si completados todos → pantalla final
+  if (estado.completados.size >= DATOS_LUGARES.length) {
+    mostrarFinal();
+  } else {
+    irAMapa();
+  }
+}
+
+// ===================================================
+// TABS
+// ===================================================
+function cambiarTab(el, tab, forzar) {
+  if (!forzar && estado.tabActual === tab) return;
+  estado.tabActual = tab;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('activo'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('activo'));
+  if (el) el.classList.add('activo');
+  document.getElementById(`tab-content-${tab}`).classList.add('activo');
+}
+
+// ===================================================
+// PANTALLA FINAL
+// ===================================================
+function mostrarFinal() {
+  const L = estado.idioma;
+  const pts = estado.puntos;
+  let estrellas = '⭐';
+  let desc = '';
+  if (pts >= 280) { estrellas = '⭐⭐⭐'; desc = L==='es'?'¡Dominas la historia de Villahermosa y el yokot\'an!':"¡Nojoch xook' Villahermosa yéetel yokot'an!"; }
+  else if (pts >= 180) { estrellas = '⭐⭐'; desc = L==='es'?'¡Excelente explorador del patrimonio tabasqueño!':"¡Nojoch beel k'inal Tabasco!"; }
+  else { estrellas = '⭐'; desc = L==='es'?'¡Sigue explorando para conocer más del patrimonio!':"¡Bin ka' beel yéetel xook' mas!"; }
+
+  document.getElementById('estrellas-final').textContent = estrellas;
+  document.getElementById('final-pts').textContent = `${pts} ${L==='es'?'puntos':'puntos'}`;
+  document.getElementById('final-desc').textContent = desc;
+  document.getElementById('final-titulo').textContent = UI[L]['final-titulo'];
+  document.getElementById('vocab-aprendido-titulo').innerHTML = UI[L]['vocab-aprendido-titulo'];
+  document.getElementById('btn-reiniciar').textContent = UI[L]['btn-reiniciar'];
+
+  const vg = document.getElementById('vocab-aprendido-grid');
+  vg.innerHTML = '';
+  estado.vocabAprendido.forEach(v => {
+    const pill = document.createElement('span');
+    pill.className = 'vocab-pill';
+    pill.textContent = v;
+    vg.appendChild(pill);
+  });
+  irAPantalla('final');
+}
+
+// ===================================================
+// INIT
+// ===================================================
+setIdioma('es');
+</script>
+</body>
+</html>
